@@ -2,7 +2,7 @@
 title: 'R documentation: transitioning from the odin interface to R'
 author: 'Prepared for the course: Introduction to Mathematical Models of the Epidemiology
   & Control of Infectious Diseases'
-date: "September 2024"
+date: "September 2025"
 output:
   html_document:
     df_print: paged
@@ -72,7 +72,7 @@ Another feature of the interface is the "Sensitivity" panel. Here, you can explo
 
 ```{r echo=FALSE,fig.align="center", out.width="90%"}
 # All defaults
-knitr::include_graphics("img/batchrun.png")
+# knitr::include_graphics("img/batchrun.png")
 ```
 
 ### SIR closed model using R and Rstudio
@@ -97,7 +97,7 @@ library("odin")
 Now, lets write our model equations using `odin` syntax. Note the initial line is a command to create an `odin` object called "sir". Similarly, the contents of this object are enclosed in brackets.
 
 
-```{r echo = TRUE, message = FALSE, warning = FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 sir <- odin::odin({
   deriv(S) <-  - beta * S * I / N
   deriv(I) <- beta * S * I / N - sigma * I
@@ -119,7 +119,7 @@ Our `sir` object is our model that we can call at any point. Let's create and ru
 
 ```{r echo = TRUE, message = FALSE, warning = FALSE}
 # Create an instance of our odin object called "mod"
-mod <- sir()
+mod <- sir$new()
 
 # Create a time vector (for this example use per week unit times with a total of 20 weeks)
 t <- seq(0, 20, by = 0.02)
@@ -155,14 +155,14 @@ There are many ways of iterating over this vector of values and collecting the r
 
 ```{r echo = TRUE}
 f <- function(beta) {
-  mod <- sir(beta = beta)
+  mod <- sir$new(beta = beta)
   mod$run(t)[, "I"]
 }
 ```
 
 (note that for this case, the values `t` and `sir` here are found in the "Global environment" - i.e., the values that you have already saved in your R session. For more information on this programming style see [the functional programming chapter in Advanced R](http://adv-r.had.co.nz/Functional-programming.html))
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 output <- sapply(beta, f)
 ```
 

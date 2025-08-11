@@ -6,7 +6,7 @@ TMP_CONFIG=$PWD/tmpConfig
 rm -rf $TMP_CONFIG
 mkdir $TMP_CONFIG
 cp -r apps defaultCode files help index.html wodin.config.json $TMP_CONFIG
-sed -i 's+https://epimodels.dide.ic.ac.uk/shortcourse-2024+http://localhost:3000+g' $TMP_CONFIG/wodin.config.json
+sed -i 's+https://epimodels.dide.ic.ac.uk/shortcourse-2025+http://localhost:3000+g' $TMP_CONFIG/wodin.config.json
 
 WODIN_BRANCH=main
 ODIN_API_BRANCH=main
