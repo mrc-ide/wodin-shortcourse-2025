@@ -20,7 +20,7 @@
 #   C_r = # community (non-hospitalised) - will recover
 #   R = # recovered
 #   
-#   Using the curve fitting option, the initial number of cases (seeding the infection), the CFR, the basic reproduction number 
+#   Using the curve fitting option, the initial number of cases (seeding the infection), the basic reproduction number 
 # and the delay from onset to hospitalisation (pre-intervention)  can be optimised to fit both the weekly incidence curve of onset of symptoms and the 
 # weekly incidence curve of death.
 ################################################################################
@@ -50,14 +50,14 @@ deriv(R) <- sigma_r * (H_r + C_r)
 deriv(Dead) <- sigma_d * (H_d + C_d)
 
 deriv(cumul_onset) <-  p_hosp * gamma_2 * E_2 
-deriv(cumul_death_h) <-  sigma_d * H_d
+deriv(cumul_reported_death_h) <-  sigma_d * H_d * p_outcome_reported
 
 ### create delayed variables in order to compute non cumulative (weekly) 
 ### incidence and deaths variables
 cumul_onset_delayed <- delay(cumul_onset, 7) # 7 for weekly delay
-cumul_death_h_delayed <- delay(cumul_death_h, 7) # 7 for weekly delay
+cumul_reported_death_h_delayed <- delay(cumul_reported_death_h, 7) # 7 for weekly delay
 output(weekly_onset) <- cumul_onset - cumul_onset_delayed
-output(weekly_death_h) <- cumul_death_h - cumul_death_h_delayed
+output(weekly_reported_death_h) <- cumul_reported_death_h - cumul_reported_death_h_delayed
 
 ### useful variables to output
 
@@ -81,14 +81,14 @@ initial(C_r) <- 0
 initial(R) <- 0 
 initial(Dead) <- 0
 initial(cumul_onset) <- 0
-initial(cumul_death_h)  <- 0
+initial(cumul_reported_death_h)  <- 0
 
 ################################################################################
 ### user defined parameters
 ################################################################################
 
 N <- user(5e+5, min = 0) # population size with default value
-I0 <- user(21.21, min = 0) # initial number of infected individuals ### default value was fitted to data
+I0 <- user(25.6403187197628, min = 0) # initial number of infected individuals 
 L <- user(9.92, min = 0) # mean latency
 L_frac_1 <- user(0.212, min = 0, max = 1) # fraction of latency spent in first latent compartment
 mu_d <- user(8.0, min = 0) # time from admission to death in days
@@ -96,11 +96,12 @@ sigma_acute_d <- user(1, min = 0) # 1 / mean time of acute death stage
 mu_r <- user(16.98, min = 0) # mean time from admission to recovery in days
 cfr <- user(0.5656, min = 0, max = 1) # case fatality ratio
 p_hosp <- user(0.7, min = 0, max = 1) # proportion hospitalised
-R0 <- user(2.51, min = 0) # R0 (assumed the same for those who stay in community and
-# (1) recover or (2) died ### default value was fitted to data
+R0 <- user(2.05961562748216, min = 0) # R0 (assumed the same for those who stay in community and 
+# (1) recover or (2) died 
 t_intervention <- user(170, min = 0) # time of interventions
-mu_h_before <- user(3.97, min = 0) # mean onset to hosp. delay before interventions ### default value was fitted to data
-mu_h_after <- user(0.30, min = 0) # mean onset to hosp. delay after interventions ### default value was fitted to data
+p_outcome_reported <- user(0.775)
+mu_h_before <- user(5.76797267276031, min = 0) # mean onset to hosp. delay before interventions
+mu_h_after <- user(1.46, min = 0) # mean onset to hosp. delay after interventions
 
 ### compute other parameters from the ones above
 gamma_1 <- 1/(L*L_frac_1)

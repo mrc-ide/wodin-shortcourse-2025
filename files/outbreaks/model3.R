@@ -45,14 +45,14 @@ deriv(R) <- sigma_r * (H_r + C_r)
 deriv(Dead) <- sigma_d * (H_d + C_d)
 
 deriv(cumul_onset) <-  p_hosp * gamma_2 * E_2 
-deriv(cumul_death_h) <-  sigma_d * H_d
+deriv(cumul_reported_death_h) <-  sigma_d * H_d * p_outcome_reported
 
 ### create delayed variables in order to compute non cumulative (weekly) 
 ### incidence and deaths variables
 cumul_onset_delayed <- delay(cumul_onset, 7) # 7 for weekly delay
-cumul_death_h_delayed <- delay(cumul_death_h, 7) # 7 for weekly delay
+cumul_reported_death_h_delayed <- delay(cumul_reported_death_h, 7) # 7 for weekly delay
 output(weekly_onset) <- cumul_onset - cumul_onset_delayed
-output(weekly_death_h) <- cumul_death_h - cumul_death_h_delayed
+output(weekly_reported_death_h) <- cumul_reported_death_h - cumul_reported_death_h_delayed
 
 ### useful variables to output
 
@@ -79,7 +79,7 @@ initial(C_r) <- 0
 initial(R) <- 0 
 initial(Dead) <- 0
 initial(cumul_onset) <- 0
-initial(cumul_death_h)  <- 0
+initial(cumul_reported_death_h)  <- 0
 
 ################################################################################
 ### user defined parameters
@@ -100,6 +100,7 @@ R0 <- user(2.5, min = 0) # R0 (assumed the same for those who stay in community 
 p_funeral <- user(0.5, min = 0, max = 1) # proportion of transmission potential occurring 
   # during funeral for those who die
 t_intervention <- user(170, min = 0) # time of interventions
+p_outcome_reported <- user(0.775)
 p_safe_before <- user(0.1, min = 0, max = 1) # proportion of safe burials before interventions
 p_safe_after <- user(0.7, min = 0, max = 1) # proportion of safe burials after interventions
 mu_h_before <- user(3.34, min = 0) # mean onset to hosp. delay before interventions
