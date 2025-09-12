@@ -11,7 +11,6 @@
 #   
 #   Fit the model by calibrating the following parameters:
 #     - the initial number of cases (seeding the infection) 
-#     - the CFR 
 #     - the reproduction number before and after intervention 
 #   Fit both the weekly incidence curve of onset of symptoms and the 
 # weekly incidence curve of death.
@@ -35,14 +34,14 @@ deriv(R) <- sigma_r * I_r
 deriv(Dead) <- sigma_d * I_d
 
 deriv(cumul_onset) <-  gamma * E
-cumul_death_h <- Dead
+cumul_reported_death_h <- Dead * p_outcome_reported
 
 ### create delayed variables in order to compute non cumulative (weekly) 
 ### incidence and deaths variables
 cumul_onset_delayed <- delay(cumul_onset, 7) # 7 for weekly delay
-cumul_death_h_delayed <- delay(cumul_death_h, 7) # 7 for weekly delay
+cumul_reported_death_h_delayed <- delay(cumul_reported_death_h, 7) # 7 for weekly delay
 output(weekly_onset) <- cumul_onset - cumul_onset_delayed
-output(weekly_death_h) <- cumul_death_h - cumul_death_h_delayed
+output(weekly_reported_death_h) <- cumul_reported_death_h - cumul_reported_death_h_delayed
 
 ### useful variables to output
 
@@ -75,6 +74,7 @@ R0_before <- user(2.5, min = 0) # Rt (assumed the same for those who stay in com
 # (1) recover or (2) died 
 R0_after <- user(0.5, min = 0) 
 t_intervention <- user(170, min = 0) # time of interventions
+p_outcome_reported <- user(0.775)
 
 ### compute other parameters from the ones above
 gamma <- 1/L
@@ -86,7 +86,7 @@ Rt <- if (t <= t_intervention) R0_before else R0_after
 
 ### additional things to output
 output(Rt) <- TRUE
-output(cumul_death_h) <- TRUE
+output(cumul_reported_death_h) <- TRUE
 
 
 
